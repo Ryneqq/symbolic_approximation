@@ -18,7 +18,7 @@ impl ParGen {
     }
 
     pub fn random() -> Self {
-        let mut get_prb = random();
+        let mut get_prb = random(3);
 
         let con = get_prb();
         let var = get_prb();
@@ -40,9 +40,9 @@ pub struct ActGen {
     mutation: f64, // mutation rate
 }
 
-fn random() -> impl FnMut() -> f64 {
-    let mul = 0.5f64;
+fn random(ele: usize) -> impl FnMut() -> f64 {
     let mut prb = 1f64;
+    let mul = prb / (ele as f64 - 1f64);
     let mut rng = rand::thread_rng();
 
     move || {
@@ -52,19 +52,94 @@ fn random() -> impl FnMut() -> f64 {
     }
 }
 
+
+
+// impl<I, F> Iterator for Update<I, F>
+// where
+//     I: Iterator,
+//     F: FnMut(&mut I::Item),
+// {
+//     type Item = I::Item;
+
+//     fn next(&mut self) -> Option<Self::Item> {
+//         if let Some(mut v) = self.iter.next() {
+//             (self.f)(&mut v);
+//             Some(v)
+//         } else {
+//             None
+//         }
+//     }
+
+struct Sequence<F> {
+    cur: usize,
+    max: usize,
+    sum: f64,
+    get_prb: F
+}
+
+impl<F> Sequence<F>
+    where F: FnMut() -> f64
+{
+    pub fn new(ele: usize, f: F) -> Self {
+        Self {
+            cur: 0,
+            max: ele,
+            sum: 0.0,
+            get_prb: f
+        }
+    }
+}
+
+impl<F> Iterator for Sequence<F>
+    where
+        F: FnMut() -> f64,
+{
+    type Item = f64;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        if self.cur < self.max {
+            let nxt = (self.get_prb)();
+            self.sum += nxt;
+            self.cur += 1;
+            Some(nxt)
+        } else if self.cur == self.max {
+            self.cur += 1;
+            Some(1.0 - self.sum)
+        } else {
+            None
+        }
+    }
+}
+
+pub fn seq(ele: usize) -> impl Iterator<Item = f64> {
+    Sequence::new(ele, random(ele))
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
 
     #[test]
     fn test_random() {
-        let mut get_prb = random();
+        println!("HEEERREEEA");
+        let ele = 3;
+        let mut get_prb = random(3);
         let mut sum = 0f64;
+        dbg!("here");
+        let mut seq = seq(ele);
+        dbg!(seq.next());
 
-        for _ in 0..100 {
-            sum += get_prb();
+        for num in seq {
+            sum += dbg!(num);
         }
+        dbg!(sum);
+        panic!();
 
-        assert!(sum < 1f64)
+        // for _ in 0..ele {
+        //     sum += dbg!(get_prb());
+        // }
+
+        // println!("sum: {}, last: {}", sum, 1f64 - sum);
+        // assert!(sum > 1f64)
     }
 }
