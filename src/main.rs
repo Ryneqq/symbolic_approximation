@@ -8,6 +8,7 @@ mod par;
 mod fun;
 mod gen;
 mod gen_code;
+mod sequence;
 
 pub use var::Var;
 pub use par::Par;
