@@ -28,13 +28,12 @@ impl<F> Iterator for Sequence<F>
 
     fn next(&mut self) -> Option<Self::Item> {
         if self.cur < self.max {
-            let nxt = (self.get_prb)();
-            self.sum += nxt;
+            self.sum += (self.get_prb)();
             self.cur += 1;
-            Some(nxt)
+            Some(self.sum)
         } else if self.cur == self.max {
             self.cur += 1;
-            Some(1f64 - self.sum)
+            Some(1f64)
         } else {
             None
         }
@@ -66,21 +65,13 @@ mod tests {
     fn test_random() {
         assert_eq!(0f64, sequence(0).sum());
         assert_eq!(1f64, sequence(1).sum());
-        assert_eq!(1f64, sequence(10).sum());
-        assert_eq!(1f64, sequence(100).sum());
+
+        assert!(10f64 > sequence(10).sum());
+        assert!(100f64 > sequence(100).sum());
 
         assert_eq!(0, sequence(0).count());
         assert_eq!(1, sequence(1).count());
         assert_eq!(10, sequence(10).count());
         assert_eq!(100, sequence(100).count());
-    }
-
-    #[test]
-    fn test_random1() {
-        for val in sequence(5) {
-            dbg!(val);
-        }
-
-        panic!("")
     }
 }
