@@ -1,13 +1,13 @@
-use crate::{Element, Var};
+use crate::{Value, Var};
 use std::collections::HashMap;
 
 pub struct Outcome {
-    element: Element,
+    element: Value,
     bindings: HashMap<Var, f32>
 }
 
-impl From<Element> for Outcome {
-    fn from(element: Element) -> Self {
+impl From<Value> for Outcome {
+    fn from(element: Value) -> Self {
         Self { element, bindings: Default::default() }
     }
 }

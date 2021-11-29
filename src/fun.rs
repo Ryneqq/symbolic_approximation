@@ -1,4 +1,4 @@
-use crate::{ Element, ElementTrait, Var };
+use crate::{ Value, Var };
 
 use itertools::Itertools;
 use std::collections::HashMap;
@@ -7,11 +7,11 @@ use std::str::FromStr;
 
 #[derive(Debug)]
 pub enum Fun {
-    Add(Elements),
-    Mul(Elements),
-    Pow(Elements),
-    Sin(Elements),
-    Log(Elements),
+    Add(FunValues),
+    Mul(FunValues),
+    Pow(FunValues),
+    Sin(FunValues),
+    Log(FunValues),
 }
 
 impl Fun {
@@ -40,35 +40,35 @@ impl Fun {
         }
     }
 
-    pub fn pre_calc(&self, x: Option<f32>, y: Option<f32>, z: Option<f32>) -> Element {
-        use Element::Const;
+    // pub fn pre_calc(&self, x: Option<f32>, y: Option<f32>, z: Option<f32>) -> Value {
+    //     use Value::Const;
 
-        match self {
-            Fun::Add(elements) => match elements.pre_calc(x, y, z) {
-                (Const(one), Const(other)) => Element::Const(one + other),
-                // TODO: Could add mechanism for switching elemnts to add
-                // (one, Const(other)) => Element::Const(one + other),
-                // (Const(one), other) => Element::Const(one + other),
-                (one, other) => Element::add((one, other)),
-            },
-            Fun::Mul(elements) => match elements.pre_calc(x, y, z) {
-                (Const(one), Const(other)) => Element::Const(one * other),
-                (one, other) => Element::mul((one, other)),
-            },
-            Fun::Pow(elements) => match elements.pre_calc(x, y, z) {
-                (Const(one), Const(other)) => Element::Const(one.powf(other)),
-                (one, other) => Element::pow((one, other)),
-            },
-            Fun::Sin(elements) => match elements.pre_calc(x, y, z) {
-                (Const(one), Const(other)) => Element::Const(one * other.sin()),
-                (one, other) => Element::sin((one, other)),
-            },
-            Fun::Log(elements) => match elements.pre_calc(x, y, z) {
-                (Const(one), Const(other)) => Element::Const(one.log(other)),
-                (one, other) => Element::sin((one, other)),
-            },
-        }
-    }
+    //     match self {
+    //         Fun::Add(elements) => match elements.pre_calc(x, y, z) {
+    //             (Const(one), Const(other)) => Value::Const(one + other),
+    //             // TODO: Could add mechanism for switching elemnts to add
+    //             // (one, Const(other)) => Element::Const(one + other),
+    //             // (Const(one), other) => Element::Const(one + other),
+    //             (one, other) => Value::add((one, other)),
+    //         },
+    //         Fun::Mul(elements) => match elements.pre_calc(x, y, z) {
+    //             (Const(one), Const(other)) => Value::Const(one * other),
+    //             (one, other) => Value::mul((one, other)),
+    //         },
+    //         Fun::Pow(elements) => match elements.pre_calc(x, y, z) {
+    //             (Const(one), Const(other)) => Value::Const(one.powf(other)),
+    //             (one, other) => Value::pow((one, other)),
+    //         },
+    //         Fun::Sin(elements) => match elements.pre_calc(x, y, z) {
+    //             (Const(one), Const(other)) => Value::Const(one * other.sin()),
+    //             (one, other) => Value::sin((one, other)),
+    //         },
+    //         Fun::Log(elements) => match elements.pre_calc(x, y, z) {
+    //             (Const(one), Const(other)) => Value::Const(one.log(other)),
+    //             (one, other) => Value::sin((one, other)),
+    //         },
+    //     }
+    // }
 }
 
 /// ## Example
@@ -97,11 +97,11 @@ impl FromStr for Fun {
 }
 
 #[derive(Debug)]
-pub struct Elements(Box<(Element, Element)>); // TODO rename to FunValues
+pub struct FunValues(Box<(Value, Value)>); // TODO rename to FunValues
 
-impl Elements {
-    pub fn new(one: Element, other: Element) -> Self {
-        Elements(Box::new((one, other)))
+impl FunValues {
+    pub fn new(one: Value, other: Value) -> Self {
+        FunValues(Box::new((one, other)))
     }
 
     pub fn calc(&self, vars: &HashMap<Var, f32>) -> (f32, f32) {
@@ -110,9 +110,9 @@ impl Elements {
         }
     }
 
-    pub fn pre_calc(&self, x: Option<f32>, y: Option<f32>, z: Option<f32>) -> (Element, Element) {
-        match self.0.deref() {
-            (ref one, ref other) => (one.pre_calc(x, y, z), other.pre_calc(x, y, z)),
-        }
-    }
+    // pub fn pre_calc(&self, x: Option<f32>, y: Option<f32>, z: Option<f32>) -> (Value, Value) {
+    //     match self.0.deref() {
+    //         (ref one, ref other) => (one.pre_calc(x, y, z), other.pre_calc(x, y, z)),
+    //     }
+    // }
 }
