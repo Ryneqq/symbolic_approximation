@@ -31,43 +31,13 @@ impl Value {
         Self::Fun(Fun::Log(elements.into()))
     }
 
-    // TODO: should return Value
-    pub fn calc(&self, vars: &HashMap<Var, f32>) -> f32 {
+    pub fn calc(&self, vars: &HashMap<Var, f32>) -> Value {
         match self {
-            Value::Const(con) => *con,
-            Value::Var(var) => *vars.get(&var).unwrap(),
+            Value::Const(con) => Value::Const(*con),
+            Value::Var(var) => vars.get(&var).map(|con| Value::Const(*con)).unwrap_or(Value::Var(*var)),
             Value::Fun(fun) => fun.calc(&vars),
         }
     }
-
-    // TODO: remove
-    // pub fn pre_calc(&self, x: Option<f32>, y: Option<f32>, z: Option<f32>) -> Value {
-    //     match self {
-    //         Value::Const(con) => Value::Const(*con),
-    //         Value::Fun(fun) => fun.pre_calc(x, y, z),
-    //         Value::Var(Var::X) => {
-    //             if x.is_some() {
-    //                 Value::Const(x.unwrap())
-    //             } else {
-    //                 Value::x()
-    //             }
-    //         }
-    //         Value::Var(Var::Y) => {
-    //             if y.is_some() {
-    //                 Value::Const(y.unwrap())
-    //             } else {
-    //                 Value::y()
-    //             }
-    //         }
-    //         Value::Var(Var::Z) => {
-    //             if z.is_some() {
-    //                 Value::Const(z.unwrap())
-    //             } else {
-    //                 Value::z()
-    //             }
-    //         }
-    //     }
-    // }
 
     pub fn outcome(self) -> Outcome {
        self.into()

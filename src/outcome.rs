@@ -19,7 +19,7 @@ impl Outcome {
         self
     }
 
-    pub fn calculate(&self) -> f32 {
+    pub fn calculate(&self) -> Value {
         self.element.calc(&self.bindings)
     }
 }
