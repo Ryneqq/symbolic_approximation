@@ -1,4 +1,4 @@
-use crate::{Fun, Var, FunValues, Outcome, AsValue};
+use crate::{Fun, Var, FunValues, Outcome};
 
 use std::collections::HashMap;
 use std::ops::{Add, Mul, Sub, Div};
@@ -44,6 +44,14 @@ impl Value {
     }
 }
 
+// impl<T> Add for T where T: AsValue {
+//     type Output = Value;
+
+//     fn add(self, other: Self) -> Value {
+//         Value::add((self, other))
+//     }
+// }
+
 impl Add for Value {
     type Output = Value;
 
@@ -88,8 +96,3 @@ impl From<f32> for Value {
     }
 }
 
-impl<T: AsValue, O: AsValue> From<(T, O)> for FunValues {
-    fn from((one, other): (T, O)) -> Self {
-        Self::new(one.element(), other.element())
-    }
-}

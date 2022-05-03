@@ -1,0 +1,9 @@
+[package]
+name = "prime_store"
+version = "0.1.0"
+authors = ["Pawel Rynowiecki <pawel.rynowiecki@anixe.pl>"]
+edition = "2018"
+
+[dependencies]
+itertools = "0.10.0"
+# bitvec = "1.0.0"

@@ -1,4 +1,4 @@
-use crate::{ Value, Var };
+use crate::{ AsValue, Value, Var };
 
 use itertools::Itertools;
 use std::collections::HashMap;
@@ -23,6 +23,7 @@ impl Fun {
                 (Const(one), Const(other)) => Value::Const(one + other),
                 // TODO: Could add mechanism for switching elemnts to add
                 // TODO2 dont remember an idea
+                // TODO3: i think i ment to sitch maths addition with places so i could sum all consts for example
                 // (one, Const(other)) => Element::Const(one + other),
                 // (Const(one), other) => Element::Const(one + other),
                 (one, other) => Value::add((one, other)),
@@ -84,5 +85,11 @@ impl FunValues {
         match self.0.deref() {
             (ref one, ref other) => (one.calc(vars), other.calc(vars)),
         }
+    }
+}
+
+impl<T: AsValue, O: AsValue> From<(T, O)> for FunValues {
+    fn from((one, other): (T, O)) -> Self {
+        Self::new(one.value(), other.value())
     }
 }
